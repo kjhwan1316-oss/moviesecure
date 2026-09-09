@@ -4,48 +4,54 @@ import java.util.Scanner;
 public class Login {
     public static void main(String[] args) {
         String url = "jdbc:mysql://localhost:3306/movie_db";
+        // MySQL 사용자 계정
         String user = "root";
+        // MySQL 비밀번호
         String password = "sql12345";
-        Scanner sc  = new Scanner(System.in);
+        Scanner scanner =new Scanner(System.in);
         try{
-            Connection conn = DriverManager.getConnection(url, user, password);
-            System.out.println("영화관 회원 로그인");
-            System.out.println("아이디: ");
-            String inputId  = sc.nextLine();
-            System.out.println("비밀번호");
-            String inputPass = sc.nextLine();
+            Connection conn =
+                    DriverManager.getConnection(url, user, password);
+            System.out.println("[영화관 회원 로그인]");
+            System.out.println("아이디:");
+            String inputId = scanner.nextLine();
+            System.out.println("비밀번호:");
+            String inputPass = scanner.nextLine();
 
-            String sql = "SELECT m_id,user_id,m_name,m_role " +
-                    "FROM member " +
-                    "WHERE user_id = '"+ inputId +"' " +
-                    "AND user_password = '"+ inputPass +"' ";
-            System.out.println("\n실행할 sql문");
+            String sql =
+                    "SELECT m_id, user_id, m_name, m_role " +
+                            "FROM member " +
+                            "WHERE user_id=  '"+ inputId +"' " +
+                            "AND  user_password =  '"+ inputPass +"' " ;
+            System.out.println("\n 실행할 sql문");
             System.out.println(sql);
-            //문장을 sql에 전달
+//         // 문장을 sql 에 전달
             Statement stmt = conn.createStatement();
-            //sql 문장을 실행-> 결과 받기
+            // sql문장을 실행-> 결과 받기
             ResultSet rs = stmt.executeQuery(sql);
-            if(rs.next()){
-                String memName = rs.getString("m_name");
-                String memRole =rs.getString("m_role");
-                System.out.println("\n로그인 성공");
-                System.out.println(memName + "님! 환영합니다!");
-                System.out.println("회원권한: "+ memRole);
-            }
-            else{
-                System.out.println("아이디나 비밀번호가 다릅니다");
+            if(rs.next())
+            {
+                //sql 결과 ->자바 변수
+                String memberName = rs.getString("m_name");
+                String memberRole = rs.getString("m_role");
+
+                System.out.println("\n로그인 성공!!");
+                System.out.println(memberName + "님 환영합니다");
+                System.out.println("회원권한:"+memberRole);
+            } else {
+                System.out.println("아이디나 비밀번호가 틀렸습니다");
             }
             rs.close();
             stmt.close();
             conn.close();
         }
         catch (SQLException e) {
-            System.out.println("데이터베이스 오류");
-
-            System.out.println("오류 내용: " + e.getMessage());
+            System.out.println(
+                    "데이터베이스 오류가 발생했습니다.");
+            System.out.println(e.getMessage());
         }
-        finally {
-            sc.close();
+        finally{
+            scanner.close();
         }
     }
 }

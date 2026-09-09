@@ -1,0 +1,11 @@
+use movie_db;
+desc member;
+select * from member;
+alter table member add user_password_hash varchar(255), add password_salt varchar(100);
+alter table member modify user_password varchar(255) null;
+alter table member drop column user_password;
+alter table member modify user_password_hash varchar(255) not null, modify password_salt varchar(100) not null; 
+create user "movie_admin@localhost" identified by "movieadmin12345";
+grant select, insert, update on movie_db.member to'movie_admin@localhost';
+create user "movie_app'@'localhost" identified by "movie_app12345";
+grant select, insert, update on movie_db.member to'movie_app'@'localhost';
